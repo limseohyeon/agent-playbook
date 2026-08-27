@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 import subprocess
 from collections import defaultdict
@@ -14,6 +15,8 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 README_PATH = REPOSITORY_ROOT / "README.md"
 INDEX_HEADING = "## 목록"
 MARKDOWN_SUFFIXES = {".md", ".mdx", ".markdown"}
+TRANSLATIONS_ROOT = Path("translations")
+KOREAN_TRANSLATIONS_ROOT = TRANSLATIONS_ROOT / "ko"
 
 
 def tracked_content_paths() -> list[Path]:
@@ -30,6 +33,8 @@ def tracked_content_paths() -> list[Path]:
             continue
         path = Path(raw_path)
         if len(path.parts) < 2:
+            continue
+        if path.parts[0] == TRANSLATIONS_ROOT.name:
             continue
         if any(part.startswith(".") for part in path.parts):
             continue
@@ -129,8 +134,44 @@ def file_metadata(path: Path) -> tuple[str, str | None]:
     return normalize_inline(name), normalize_inline(description) if description else None
 
 
+def korean_translation_metadata(path: Path) -> tuple[Path, str | None, bool] | None:
+    """Return a paired Korean translation, its summary, and whether it is stale."""
+    translation_path = KOREAN_TRANSLATIONS_ROOT / path
+    absolute_path = REPOSITORY_ROOT / translation_path
+    if not absolute_path.is_file():
+        return None
+
+    try:
+        text = absolute_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return translation_path, None, True
+
+    fields, body = frontmatter_fields(text)
+    source_path = path.as_posix()
+    if fields.get("translation_of") != source_path:
+        raise SystemExit(
+            f"{translation_path.as_posix()} must declare translation_of: {source_path}"
+        )
+
+    description = fields.get("description")
+    if not description and path.suffix.casefold() in MARKDOWN_SUFFIXES:
+        description = first_markdown_sentence(body)
+
+    source_hash = normalized_file_hash(path)
+    is_stale = fields.get("source_sha256") != source_hash
+    normalized = normalize_inline(description) if description else None
+    return translation_path, normalized, is_stale
+
+
 def normalize_inline(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
+
+
+def normalized_file_hash(path: Path) -> str:
+    """Hash content consistently across LF, CRLF, and CR checkouts."""
+    content = (REPOSITORY_ROOT / path).read_bytes()
+    normalized = content.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(normalized).hexdigest()
 
 
 def escape_link_label(value: str) -> str:
@@ -147,12 +188,23 @@ def render_index(paths: list[Path]) -> str:
         lines.extend((f"### {section}", ""))
         for path in grouped[section]:
             display_name, description = file_metadata(path)
+            translation = korean_translation_metadata(path)
             repository_path = path.as_posix()
             displayed_path = repository_path.replace("`", "\\`")
             target = quote(repository_path, safe="/-._~")
-            item = f"- [{escape_link_label(display_name)}]({target})"
+            if translation:
+                translation_path, korean_description, is_stale = translation
+                description = korean_description or description
+                translation_target = quote(translation_path.as_posix(), safe="/-._~")
+                item = f"- **{escape_link_label(display_name)}**"
+            else:
+                item = f"- [{escape_link_label(display_name)}]({target})"
             if description:
                 item += f" — {description}"
+            if translation:
+                item += f" ([원문]({target}) · [한국어]({translation_target}))"
+                if is_stale:
+                    item += " · **번역 검토 필요**"
             item += f" (`{displayed_path}`)"
             lines.append(item)
         lines.append("")
