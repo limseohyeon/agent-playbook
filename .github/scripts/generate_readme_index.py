@@ -174,8 +174,9 @@ def normalized_file_hash(path: Path) -> str:
     return hashlib.sha256(normalized).hexdigest()
 
 
-def escape_link_label(value: str) -> str:
-    return value.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
+def escape_table_cell(value: str) -> str:
+    """Keep inline text from breaking a Markdown table row."""
+    return normalize_inline(value).replace("\\", "\\\\").replace("|", "\\|")
 
 
 def render_index(paths: list[Path]) -> str:
@@ -185,28 +186,35 @@ def render_index(paths: list[Path]) -> str:
 
     lines: list[str] = []
     for section in sorted(grouped, key=str.casefold):
-        lines.extend((f"### {section}", ""))
+        lines.extend(
+            (
+                f"### {section}",
+                "",
+                "| 이름 | 설명 | 문서 | 경로 |",
+                "| --- | --- | --- | --- |",
+            )
+        )
         for path in grouped[section]:
             display_name, description = file_metadata(path)
             translation = korean_translation_metadata(path)
             repository_path = path.as_posix()
-            displayed_path = repository_path.replace("`", "\\`")
+            displayed_path = escape_table_cell(repository_path.replace("`", "\\`"))
             target = quote(repository_path, safe="/-._~")
             if translation:
                 translation_path, korean_description, is_stale = translation
                 description = korean_description or description
                 translation_target = quote(translation_path.as_posix(), safe="/-._~")
-                item = f"- **{escape_link_label(display_name)}**"
-            else:
-                item = f"- [{escape_link_label(display_name)}]({target})"
-            if description:
-                item += f" — {description}"
-            if translation:
-                item += f" ([원문]({target}) · [한국어]({translation_target}))"
+                documents = f"[원문]({target}) · [한국어]({translation_target})"
                 if is_stale:
-                    item += " · **번역 검토 필요**"
-            item += f" (`{displayed_path}`)"
-            lines.append(item)
+                    documents += " · **번역 검토 필요**"
+            else:
+                documents = f"[원문]({target})"
+
+            name_cell = escape_table_cell(display_name)
+            description_cell = escape_table_cell(description or "")
+            lines.append(
+                f"| **{name_cell}** | {description_cell} | {documents} | `{displayed_path}` |"
+            )
         lines.append("")
     return "\n".join(lines).rstrip()
 
