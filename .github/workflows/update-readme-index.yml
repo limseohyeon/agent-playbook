@@ -40,5 +40,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "docs: update README index"
+          git commit -m "문서: README 목차 자동 갱신"
           git push origin HEAD:main
