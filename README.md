@@ -5,4 +5,4 @@ AI 에이전트를 일관되게 활용하기 위한 재사용 가능한 스킬, 
 
 ### skills
 
-- [deep-interview](skills/global/deep-interview/SKILL.md) — Interview ambiguous requests using Socratic questions and turn them into actionable requirements. Use when the user requests deep-interview, an in-depth interview, requirements clarification, or help organizing their thoughts, or when the goal, scope, constraints, or completion criteria are unclear. Do not use when the request is already specific or when clarification would add little value, such as fixing a typo, changing a small setting, or adding tests. (`skills/global/deep-interview/SKILL.md`)
+- **deep-interview** — 모호한 요청을 소크라테스식 질문으로 구체화해 실행 가능한 요구사항으로 정리합니다. ([원문](skills/global/deep-interview/SKILL.md) · [한국어](translations/ko/skills/global/deep-interview/SKILL.md)) (`skills/global/deep-interview/SKILL.md`)
