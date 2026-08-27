@@ -204,11 +204,11 @@ def render_index(paths: list[Path]) -> str:
                 translation_path, korean_description, is_stale = translation
                 description = korean_description or description
                 translation_target = quote(translation_path.as_posix(), safe="/-._~")
-                documents = f"[원문]({target}) · [한국어]({translation_target})"
+                documents = f"[en]({target})/[kr]({translation_target})"
                 if is_stale:
                     documents += " · **번역 검토 필요**"
             else:
-                documents = f"[원문]({target})"
+                documents = f"[en]({target})"
 
             name_cell = escape_table_cell(display_name)
             description_cell = escape_table_cell(description or "")
