@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent Playbook Manager"
+  short_description: "Classify and maintain bilingual Codex playbook artifacts"
+  default_prompt: "Use $agent-playbook-manager to create or update a reusable playbook artifact in D:\\agent-playbook."
+
+policy:
+  allow_implicit_invocation: true

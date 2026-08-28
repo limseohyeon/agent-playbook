@@ -1,44 +1,37 @@
-name: Update README index
+name: Validate playbook
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - README.md
+  pull_request:
+    paths:
+      - "agents/**"
+      - "skills/**"
+      - "rules/**"
+      - "prompts/**"
+      - "translations/**"
+      - "README.md"
+      - ".github/scripts/**"
+      - ".github/workflows/update-readme-index.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: update-readme-index
-  cancel-in-progress: false
+  group: validate-playbook-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  update-index:
+  validate-playbook:
+    name: Validate artifacts, translations, and README
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          fetch-depth: 0
+          python-version: "3.12"
 
-      - name: Update from main
-        run: git pull --rebase origin main
-
-      - name: Generate README index
-        run: python .github/scripts/generate_readme_index.py
-
-      - name: Commit changes
-        run: |
-          if git diff --quiet -- README.md; then
-            echo "README index is already current."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "문서: README 목차 자동 갱신"
-          git push origin HEAD:main
+      - name: Validate generated index
+        run: python .github/scripts/generate_readme_index.py --check
