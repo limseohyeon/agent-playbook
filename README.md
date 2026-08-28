@@ -9,6 +9,12 @@ AI 에이전트를 일관되게 활용하기 위한 재사용 가능한 스킬, 
 | --- | --- | --- | --- |
 | **code_reviewer** | 정확성, 보안, 회귀, 테스트 범위, 아키텍처, 가독성, 성능과 의존성 위험을 중점적으로 검토하는 읽기 전용 시니어 코드 리뷰어입니다. | [en](agents/global/code-reviewer/code_reviewer.toml)/[kr](translations/ko/agents/global/code-reviewer/code_reviewer.toml) | `agents/global/code-reviewer/code_reviewer.toml` |
 
+### rules
+
+| 이름 | 설명 | 문서 | 경로 |
+| --- | --- | --- | --- |
+| **response-readability-and-structure** | 사용자가 선택한 접근 방식을 유지하면서 명확성, 간결성, 실용성과 절제된 이모지 사용을 기준으로 응답을 구성합니다. | [en](rules/global/response-readability-and-structure/response-readability-and-structure.md)/[kr](translations/ko/rules/global/response-readability-and-structure/response-readability-and-structure.md) | `rules/global/response-readability-and-structure/response-readability-and-structure.md` |
+
 ### skills
 
 | 이름 | 설명 | 문서 | 경로 |
