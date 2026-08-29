@@ -7,11 +7,12 @@ import argparse
 import hashlib
 import re
 import sys
-import tomllib
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import quote
+
+from toml_compat import TomlError, load_toml
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -137,8 +138,8 @@ def file_metadata(path: Path) -> tuple[str, str | None]:
     absolute = REPOSITORY_ROOT / path
     if path.suffix.casefold() == ".toml":
         try:
-            data = tomllib.loads(absolute.read_text(encoding="utf-8"))
-        except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
+            data = load_toml(absolute.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, TomlError) as exc:
             raise SystemExit(f"Invalid TOML: {path.as_posix()}: {exc}") from exc
         name = str(data.get("name") or path.stem)
         description = data.get("description")

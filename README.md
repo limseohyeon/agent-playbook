@@ -19,5 +19,5 @@ AI 에이전트를 일관되게 활용하기 위한 재사용 가능한 스킬, 
 
 | 이름 | 설명 | 문서 | 경로 |
 | --- | --- | --- | --- |
-| **agent-playbook-manager** | D:\\agent-playbook 저장소의 카테고리, 한국어 번역, 해시 및 README 색인 규칙에 따라 재사용 가능한 Codex Agent, Skill, Rule과 Prompt를 생성하거나 수정합니다. 플레이북 산출물에만 사용하며 일반 프로젝트 파일이나 문서를 이 저장소로 이동하지 않습니다. | [en](skills/global/agent-playbook-manager/SKILL.md)/[kr](translations/ko/skills/global/agent-playbook-manager/SKILL.md) | `skills/global/agent-playbook-manager/SKILL.md` |
+| **agent-playbook-manager** | D:\\agent-playbook 저장소의 카테고리, 영어-한국어 양방향 동기화, 해시 및 README 색인 규칙에 따라 재사용 가능한 Agent, Skill, Rule과 Prompt를 생성하거나 수정합니다. 플레이북 산출물에만 사용하며 일반 프로젝트 파일이나 문서를 이 저장소로 이동하지 않습니다. 사용자가 설치를 요청하지 않으면 ~/.codex 또는 ~/.cursor로 복사하지 않습니다. | [en](skills/global/agent-playbook-manager/SKILL.md)/[kr](translations/ko/skills/global/agent-playbook-manager/SKILL.md) | `skills/global/agent-playbook-manager/SKILL.md` |
 | **deep-interview** | 모호한 요청을 소크라테스식 질문으로 구체화해 실행 가능한 요구사항으로 정리합니다. | [en](skills/global/deep-interview/SKILL.md)/[kr](translations/ko/skills/global/deep-interview/SKILL.md) | `skills/global/deep-interview/SKILL.md` |
