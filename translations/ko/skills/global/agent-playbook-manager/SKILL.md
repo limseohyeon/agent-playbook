@@ -1,13 +1,13 @@
 ---
 translation_of: skills/global/agent-playbook-manager/SKILL.md
-source_sha256: cc79077379e6712709ee70cf14c72df99420dbd9847155d28e6b29a9fd8468fe
+source_sha256: fbeb4711ed926dcae6611ff90bd629e4fe452bc4255044e0c38ba00cff06c536
 name: agent-playbook-manager
-description: D:\agent-playbook 저장소의 카테고리, 영어-한국어 양방향 동기화, 해시 및 README 색인 규칙에 따라 재사용 가능한 Agent, Skill, Rule과 Prompt를 생성하거나 수정합니다. 플레이북 산출물에만 사용하며 일반 프로젝트 파일이나 문서를 이 저장소로 이동하지 않습니다. 사용자가 설치를 요청하지 않으면 ~/.codex 또는 ~/.cursor로 복사하지 않습니다.
+description: D:\agent-playbook 저장소의 카테고리, 영어-한국어 양방향 동기화, 해시 및 README 색인 규칙에 따라 재사용 가능한 Agent, Skill, Rule과 Prompt를 생성하거나 수정합니다. 플레이북 산출물에만 사용하며 일반 프로젝트 파일이나 문서를 이 저장소로 이동하지 않습니다. 사용자가 설치를 요청하지 않으면 ~/.codex로 복사하지 않습니다.
 ---
 
 # 에이전트 플레이북 관리자
 
-`D:\agent-playbook`에서 재사용 가능한 플레이북 산출물을 관리한다. 이 저장소를 기준 원본으로 유지한다. 사용자가 별도로 설치를 요청하지 않는 한 생성한 산출물을 Codex나 Cursor에 설치하지 않는다. 기본적으로 전역 설치되는 산출물은 이 관리 Skill뿐이다.
+`D:\agent-playbook`에서 재사용 가능한 플레이북 산출물을 관리한다. 이 저장소를 기준 원본으로 유지한다. 사용자가 별도로 설치를 요청하지 않는 한 생성한 산출물을 Codex에 설치하지 않는다. 기본적으로 전역 설치되는 산출물은 이 관리 Skill뿐이다.
 
 ## 적용 범위
 
@@ -95,23 +95,21 @@ Skill에는 `quick_validate.py`, Agent에는 TOML 파싱, 변경된 Python 스�
 영어 산출물을 연결이 아니라 복사로 배포한다. 사용자가 설치를 요청하지 않으면 이 명령을 실행하지 않는다.
 
 ```powershell
-python D:\agent-playbook\scripts\install_playbook.py --runtime cursor --scope all
+python D:\agent-playbook\scripts\install_playbook.py --scope all
 ```
 
 ```powershell
-D:\agent-playbook\scripts\install-playbook.ps1 -Runtime Cursor -Scope All
+D:\agent-playbook\scripts\install-playbook.ps1 -Scope All
 ```
 
-기본값은 `--runtime codex`와 `--scope manager`이다. `scripts/install-agent-playbook-manager.ps1`은 그 기본값의 래퍼로 유지한다.
+기본 scope는 `manager`이다. `scripts/install-agent-playbook-manager.ps1`은 그 기본값의 래퍼로 유지한다.
 
-런타임 매핑:
+설치 매핑:
 
 - Codex Skill: `%USERPROFILE%\.codex\skills\<name>\`
-- Cursor Skill: `%USERPROFILE%\.cursor\skills\<name>\`
-- Cursor Agent: `%USERPROFILE%\.cursor\agents\<name>.md`
-- Cursor Rule: `%USERPROFILE%\.cursor\playbook-install\rules\`에 스테이징한 뒤 always-apply Cursor user rule로 등록한다. `D:\.cursor\` 아래에 프로젝트 rule을 쓰지 않는다.
+- Codex Rule: `%USERPROFILE%\.codex\AGENTS.md` 안의 설치기 관리 구역
 
-영어 원본만 설치한다. Skill을 Cursor로 복사할 때는 `agents/openai.yaml`을 건너뛴다. Cursor Rule을 설치한 뒤에는 같은 제목의 user rule이 없으면 등록하고, 있으면 갱신한다.
+영어 원본만 설치한다. Codex Rule 설치 시 관리 구역 밖의 내용을 보존해야 한다.
 
 재설치는 설치 스탬프와 일치하는 복사본만 덮어쓴다. 런타임 복사본이 수정된 경우에는 사용자가 `-Force`를 지정하지 않으면 중단한다.
 

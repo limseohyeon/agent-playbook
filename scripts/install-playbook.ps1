@@ -1,8 +1,5 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [ValidateSet('Codex', 'Cursor', 'All')]
-    [string] $Runtime = 'Codex',
-
     [ValidateSet('Manager', 'All')]
     [string] $Scope = 'Manager',
 
@@ -10,7 +7,14 @@ param(
 
     [switch] $Force,
 
-    [switch] $Uninstall
+    [switch] $Uninstall,
+
+    [switch] $List,
+
+    [switch] $Status,
+
+    [ValidateSet('Text', 'Json')]
+    [string] $Format = 'Text'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -20,17 +24,26 @@ if (-not (Test-Path -LiteralPath $installer -PathType Leaf)) {
     throw "Missing installer: $installer"
 }
 
-$python = Get-Command python -ErrorAction SilentlyContinue
-if (-not $python) {
-    $python = Get-Command py -ErrorAction SilentlyContinue
+$bundledPython = Join-Path $env:USERPROFILE '.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+$pythonPath = $null
+if (Test-Path -LiteralPath $bundledPython -PathType Leaf) {
+    $pythonPath = $bundledPython
 }
-if (-not $python) {
+else {
+    $python = Get-Command python -ErrorAction SilentlyContinue
+    if (-not $python) {
+        $python = Get-Command py -ErrorAction SilentlyContinue
+    }
+    if ($python) {
+        $pythonPath = $python.Source
+    }
+}
+if (-not $pythonPath) {
     throw 'Python is required to install playbook artifacts.'
 }
 
 $pythonArgs = @(
     $installer,
-    '--runtime', $Runtime.ToLowerInvariant(),
     '--scope', $Scope.ToLowerInvariant()
 )
 foreach ($artifactName in $Name) {
@@ -42,16 +55,32 @@ if ($Force) {
 if ($Uninstall) {
     $pythonArgs += '--uninstall'
 }
+if ($List) {
+    $pythonArgs += '--list'
+}
+if ($Status) {
+    $pythonArgs += '--status'
+}
+$pythonArgs += @('--format', $Format.ToLowerInvariant())
 
-$action = $(if ($Uninstall) { 'Uninstall' } else { 'Install' })
-$target = "$( $Runtime.ToLowerInvariant() ) $( $Scope.ToLowerInvariant() )"
+if (@($Uninstall, $List, $Status).Where({ $_ }).Count -gt 1) {
+    throw 'Use only one of -Uninstall, -List, or -Status.'
+}
+
+$action = $(
+    if ($Uninstall) { 'Uninstall' }
+    elseif ($List) { 'List' }
+    elseif ($Status) { 'Status' }
+    else { 'Install' }
+)
+$target = "codex $( $Scope.ToLowerInvariant() )"
 if ($Name) {
-    $target = "$( $Runtime.ToLowerInvariant() ) $($Name -join ', ')"
+    $target = "codex $($Name -join ', ')"
 }
 
 if ($WhatIfPreference) {
     $pythonArgs += '--dry-run'
-    & $python.Source @pythonArgs
+    & $pythonPath @pythonArgs
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }
@@ -59,7 +88,7 @@ if ($WhatIfPreference) {
 }
 
 if ($PSCmdlet.ShouldProcess($target, $action)) {
-    & $python.Source @pythonArgs
+    & $pythonPath @pythonArgs
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Playbook Installer"
+  short_description: "Install local playbook skills and rules safely"
+  default_prompt: "Use $agent-playbook-installer to list or install a skill or rule from D:\\agent-playbook."

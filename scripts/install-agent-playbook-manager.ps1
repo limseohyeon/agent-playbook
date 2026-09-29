@@ -5,7 +5,6 @@ $ErrorActionPreference = 'Stop'
 
 $installer = Join-Path $PSScriptRoot 'install-playbook.ps1'
 $forwardArgs = @{
-    Runtime = 'Codex'
     Scope = 'Manager'
 }
 if ($WhatIfPreference) {

@@ -1,11 +1,11 @@
 ---
 name: agent-playbook-manager
-description: Create or update reusable agents, skills, rules, and prompts in the D:\agent-playbook repository using its category, bidirectional English-Korean synchronization, hash, and README-index conventions. Use for playbook artifacts only; do not route ordinary project files or general documents into this repository. Do not copy artifacts into ~/.codex or ~/.cursor unless the user asks to install them.
+description: Create or update reusable agents, skills, rules, and prompts in the D:\agent-playbook repository using its category, bidirectional English-Korean synchronization, hash, and README-index conventions. Use for playbook artifacts only; do not route ordinary project files or general documents into this repository. Do not copy artifacts into ~/.codex unless the user asks to install them.
 ---
 
 # Agent Playbook Manager
 
-Manage reusable playbook artifacts in `D:\agent-playbook`. Keep this repository as the source of truth. Do not install generated artifacts into Codex or Cursor unless the user separately requests installation; this manager skill is the only artifact installed globally by default.
+Manage reusable playbook artifacts in `D:\agent-playbook`. Keep this repository as the source of truth. Do not install generated artifacts into Codex unless the user separately requests installation; this manager skill is the only artifact installed globally by default.
 
 ## Scope
 
@@ -93,23 +93,21 @@ If the category structure changes, inspect and update both the README generator 
 Publish English artifacts with a copy, not a link. Do not run these commands unless the user asks to install.
 
 ```powershell
-python D:\agent-playbook\scripts\install_playbook.py --runtime cursor --scope all
+python D:\agent-playbook\scripts\install_playbook.py --scope all
 ```
 
 ```powershell
-D:\agent-playbook\scripts\install-playbook.ps1 -Runtime Cursor -Scope All
+D:\agent-playbook\scripts\install-playbook.ps1 -Scope All
 ```
 
-Defaults are `--runtime codex` and `--scope manager`. `scripts/install-agent-playbook-manager.ps1` remains a wrapper for that default.
+The default scope is `manager`. `scripts/install-agent-playbook-manager.ps1` remains a wrapper for that default.
 
-Runtime mapping:
+Installation mapping:
 
 - Codex skills: `%USERPROFILE%\.codex\skills\<name>\`
-- Cursor skills: `%USERPROFILE%\.cursor\skills\<name>\`
-- Cursor agents: `%USERPROFILE%\.cursor\agents\<name>.md`
-- Cursor rules: stage under `%USERPROFILE%\.cursor\playbook-install\rules\`, then register as Cursor user rules with always-apply. Do not write project rules under `D:\.cursor\`.
+- Codex rules: the installer-managed block in `%USERPROFILE%\.codex\AGENTS.md`
 
-Install English sources only. Skip `agents/openai.yaml` when copying skills to Cursor. After a Cursor rule install, register or update the matching user rule by title if it is not already present.
+Install English sources only. Codex rule installation must preserve content outside the managed block.
 
 Reinstall overwrites copies that still match their install stamp. If a runtime copy was edited, stop unless the user passes `-Force`.
 
