@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitLab Issue Lifecycle"
+  short_description: "Turn approved agent plans into tracked GitLab issues"
+  default_prompt: "Use $gitlab-issue-lifecycle to draft GitLab issues from this approved plan."

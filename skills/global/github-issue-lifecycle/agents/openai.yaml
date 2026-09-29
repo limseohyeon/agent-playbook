@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Issue Lifecycle"
+  short_description: "Turn approved agent plans into tracked GitHub issues"
+  default_prompt: "Use $github-issue-lifecycle to draft GitHub issues from this approved plan."
