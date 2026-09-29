@@ -1,0 +1,4 @@
+interface:
+  display_name: "Notion 기술 기록"
+  short_description: "기술 개념과 학습 일정을 Notion에 분리 저장"
+  default_prompt: "Use $notion-record-tech-concept to save this technical concept or learning schedule to the appropriate separate Notion page."
