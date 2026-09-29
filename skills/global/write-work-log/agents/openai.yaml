@@ -1,0 +1,7 @@
+interface:
+  display_name: "작업 일지 작성"
+  short_description: "완료한 개발 작업을 구조화된 Markdown 일지로 정리"
+  default_prompt: "Use $write-work-log to summarize the completed development work as a Korean Markdown work log."
+
+policy:
+  allow_implicit_invocation: true
