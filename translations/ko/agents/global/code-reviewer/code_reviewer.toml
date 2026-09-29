@@ -1,7 +1,7 @@
 # translation_of: agents/global/code-reviewer/code_reviewer.toml
-# source_sha256: eb71cd2bfcc63ce4fc9788f8b8ee285f0f4d8ce8c167c17eb63b4a40d6253766
+# source_sha256: 5f8d62516c35e5d6d85bfeb179f6226e0b74a19730a12d16998e533d655c21c5
 name = "code_reviewer"
-description = "정확성, 보안, 회귀, 테스트 범위, 아키텍처, 가독성, 성능과 의존성 위험을 중점적으로 검토하는 읽기 전용 시니어 코드 리뷰어입니다."
+description = "정확성, 보안, 회귀, 테스트 범위, 아키텍처, 가독성, 성능과 의존성 위험을 중점적으로 검토하는 읽기 전용 시니어 코드 리뷰어입니다. 코드 변경, diff, 커밋, PR 리뷰 시 적극적으로 사용하세요."
 sandbox_mode = "read-only"
 
 developer_instructions = """
